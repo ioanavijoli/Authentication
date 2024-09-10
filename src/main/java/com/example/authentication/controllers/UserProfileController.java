@@ -52,12 +52,7 @@ public class UserProfileController {
             return new ResponseEntity<>("Profile not found", HttpStatus.NOT_FOUND);
         }
 
-        UserProfileDTO userProfileDTO = new UserProfileDTO();
-        userProfileDTO.setFirstname(userProfile.getFirstname());
-        userProfileDTO.setSurname(userProfile.getSurname());
-        userProfileDTO.setBirthday(userProfile.getBirthday());
-        userProfileDTO.setGender(userProfile.getGender());
-        userProfileDTO.setSmallAvatar(userProfile.getSmallAvatar());
+    UserProfileDTO userProfileDTO = UserProfileMapper.convertToDTO(userProfile);
         return ResponseEntity.ok(userProfileDTO);
     }
 
@@ -146,6 +141,10 @@ public class UserProfileController {
         }
         if (userProfileDTO.getGender() != null) {
             nonNullFields.put("gender", userProfileDTO.getGender());
+        }
+        if(userProfileDTO.getAddress() != null){
+            nonNullFields.put("address", userProfileDTO.getAddress());
+
         }
         return nonNullFields;
     }

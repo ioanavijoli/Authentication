@@ -15,7 +15,7 @@ public class UserProfileMapper {
         userProfileDTO.setBirthday(userProfile.getBirthday());
         userProfileDTO.setGender(userProfile.getGender());
         userProfileDTO.setSmallAvatar(userProfile.getSmallAvatar());
-
+        userProfileDTO.setAddress(userProfile.getAddress());
         return userProfileDTO;
     }
 
@@ -26,7 +26,7 @@ public class UserProfileMapper {
         userProfile.setBirthday(userProfileDTO.getBirthday());
         userProfile.setGender(userProfileDTO.getGender());
         userProfile.setSmallAvatar(userProfileDTO.getSmallAvatar());
-
+        userProfile.setAddress(userProfileDTO.getAddress());
         return userProfile;
     }
 }

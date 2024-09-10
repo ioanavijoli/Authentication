@@ -34,14 +34,16 @@ public class UserProfile {
     private boolean logicalDeleted;
     private String UUID;
     private Integer version;
+    private Address address;
 
-    public UserProfile(String userUUID, String firstname, String surname, LocalDateTime birthday, String gender, byte[] smallAvatar) {
+    public UserProfile(String userUUID, String firstname, String surname, LocalDateTime birthday, String gender, byte[] smallAvatar, Address address) {
         this.userUUID = userUUID;
         this.firstname = firstname;
         this.surname = surname;
         this.birthday = birthday;
         this.gender = gender;
         this.smallAvatar = smallAvatar;
+        this.address = address;
         this.dateCreated = LocalDateTime.now();
         this.logicalDeleted = false;
         this.UUID = java.util.UUID.randomUUID().toString();
