@@ -44,6 +44,9 @@ public class AuthenticationController {
             if (user != null) {
                 Map<String, Object> response = new HashMap<>();
                 response.put("accessToken", jwtUtils.generateToken(user.getUsername(), user.getRole()));
+                response.put("username", user.getUsername());
+                response.put("email", user.getEmail());
+                response.put("role", user.getRole().toString());
                 return ResponseEntity.ok(response);
             }
 
