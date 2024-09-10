@@ -8,6 +8,8 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.persistence.Column;
+import javax.persistence.Lob;
 import java.time.LocalDateTime;
 
 @Document("userProfiles")
@@ -23,9 +25,9 @@ public class UserProfile {
     private String firstname;
     private String surname;
     private LocalDateTime birthday;
-    private String religion;
     private String gender;
-    private String relationship;
+    @Lob
+    @Column(length = 1000)
     private byte[] smallAvatar;
     private LocalDateTime dateCreated;
     private LocalDateTime dateUpdated;
@@ -33,14 +35,13 @@ public class UserProfile {
     private String UUID;
     private Integer version;
 
-    public UserProfile(String userUUID, String firstname, String surname, LocalDateTime birthday, String religion, String gender, String relationship) {
+    public UserProfile(String userUUID, String firstname, String surname, LocalDateTime birthday, String gender, byte[] smallAvatar) {
         this.userUUID = userUUID;
         this.firstname = firstname;
         this.surname = surname;
         this.birthday = birthday;
-        this.religion = religion;
         this.gender = gender;
-        this.relationship = relationship;
+        this.smallAvatar = smallAvatar;
         this.dateCreated = LocalDateTime.now();
         this.logicalDeleted = false;
         this.UUID = java.util.UUID.randomUUID().toString();

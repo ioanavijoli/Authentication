@@ -16,8 +16,6 @@ public class UserProfileDTO {
     private String surname;
     private LocalDateTime birthday;
     private byte[] smallAvatar;
-    private String religion;
     private String gender;
-    private String relationship;
 
 }
