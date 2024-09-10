@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Document("users")
 @Getter
@@ -28,6 +29,7 @@ public class User {
     private boolean logicalDeleted;
     private String UUID;
     private Integer version;
+    private List<String> favorites;
 
     public User(String username, String email, String password, UserRole role) {
         super();
