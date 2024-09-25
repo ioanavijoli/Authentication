@@ -27,17 +27,23 @@ public class UserProfileService {
             throw new IllegalStateException("You already have a profile.");
         }
 
-        UserProfile userProfile = new UserProfile(user.getUUID(),
+        byte[] compressedImage = null;
+        if (userProfileDTO.getSmallAvatar() != null) {
+            compressedImage = ImageUtil.compressImage(userProfileDTO.getSmallAvatar());
+        }
+
+        UserProfile userProfile = new UserProfile(
+                user.getUUID(),
                 userProfileDTO.getFirstname(),
                 userProfileDTO.getSurname(),
                 userProfileDTO.getBirthday(),
                 userProfileDTO.getGender(),
-                ImageUtil.compressImage(userProfileDTO.getSmallAvatar()),
-                userProfileDTO.getAddress());
+                compressedImage,
+                userProfileDTO.getAddress()
+        );
 
         userProfileRepository.save(userProfile);
     }
-
 
     public UserProfile findByUserUUID(String uuid) {
         return userProfileRepository.findByUUID(uuid).orElse(null);
@@ -66,8 +72,8 @@ public class UserProfileService {
             if (newProfile.getAddress().getStreet() != null && !Objects.equals(newProfile.getAddress().getStreet(), "")) {
                 address.setStreet(newProfile.getAddress().getStreet());
             }
-            if (newProfile.getAddress().getZipcode() != null && !Objects.equals(newProfile.getAddress().getZipcode(), "")) {
-                address.setZipcode(newProfile.getAddress().getZipcode());
+            if (newProfile.getAddress().getNumber() != null && !Objects.equals(newProfile.getAddress().getNumber(), "")) {
+                address.setNumber(newProfile.getAddress().getNumber());
             }
             if (newProfile.getAddress().getCity() != null && !Objects.equals(newProfile.getAddress().getCity(), "")) {
                 address.setCity(newProfile.getAddress().getCity());
@@ -85,26 +91,6 @@ public class UserProfileService {
         userProfileRepository.save(userProfile);
     }
 
-    private static Address getAddress(UserProfileDTO newProfile, UserProfile userProfile) {
-        Address address = userProfile.getAddress() != null ? userProfile.getAddress() : new Address();
-
-        if (newProfile.getAddress().getStreet() != null && !Objects.equals(newProfile.getAddress().getStreet(), "")) {
-            address.setStreet(newProfile.getAddress().getStreet());
-        }
-        if (newProfile.getAddress().getZipcode() != null && !Objects.equals(newProfile.getAddress().getZipcode(), "")) {
-            address.setZipcode(newProfile.getAddress().getZipcode());
-        }
-        if (newProfile.getAddress().getCity() != null && !Objects.equals(newProfile.getAddress().getCity(), "")) {
-            address.setCity(newProfile.getAddress().getCity());
-        }
-        if (newProfile.getAddress().getCounty() != null && !Objects.equals(newProfile.getAddress().getCounty(), "")) {
-            address.setCounty(newProfile.getAddress().getCounty());
-        }
-        if (newProfile.getAddress().getCountry() != null && !Objects.equals(newProfile.getAddress().getCountry(), "")) {
-            address.setCountry(newProfile.getAddress().getCountry());
-        }
-        return address;
-    }
 
     public UserProfileDTO getUserProfileDTO(String userUUID) {
         UserProfile userProfile = findByUserUUID(userUUID);

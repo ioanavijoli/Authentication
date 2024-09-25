@@ -3,26 +3,27 @@ package com.example.authentication.services;
 import com.example.authentication.entity.Info;
 import com.example.authentication.entity.Review;
 import com.example.authentication.entity.User;
+import com.example.authentication.entity.UserProfile;
 import com.example.authentication.repositories.InfoRepository;
+import com.example.authentication.repositories.UserProfileRepository;
 import com.example.authentication.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserProfileRepository userProfileRepository;
     private final InfoRepository infoRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository, InfoRepository infoRepository) {
+    public UserService(UserRepository userRepository, UserProfileRepository userProfileRepository, InfoRepository infoRepository) {
         this.userRepository = userRepository;
+        this.userProfileRepository = userProfileRepository;
         this.infoRepository = infoRepository;
     }
 
@@ -32,10 +33,6 @@ public class UserService {
 
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
-    }
-
-    public boolean checkPassword(String userPassword, String password) {
-        return BCrypt.checkpw(password, userPassword);
     }
 
     public List<Info> getFavorites(String username) {
@@ -50,7 +47,19 @@ public class UserService {
         return favorites;
     }
 
+    public Map<String, String> getUserDetailsByUsername(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalStateException("User not found"));
 
+        UserProfile userProfile = userProfileRepository.findByUUID(user.getUUID())
+                .orElseThrow(() -> new IllegalStateException("User profile not found"));
+
+        Map<String, String> userDetails = new HashMap<>();
+        userDetails.put("firstName", userProfile.getFirstname());
+        userDetails.put("lastName", userProfile.getSurname());
+
+        return userDetails;
+    }
     public void addToFavorites(String username, String infoId) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalStateException("User not found"));
 
