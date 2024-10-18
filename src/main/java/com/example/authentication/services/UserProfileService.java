@@ -90,6 +90,22 @@ public class UserProfileService {
         userProfile.setDateUpdated(LocalDateTime.now());
         userProfileRepository.save(userProfile);
     }
+    public boolean hasCompleteProfile(String userUUID) {
+        UserProfileDTO userProfileDTO = getUserProfileDTO(userUUID);
+
+        if (userProfileDTO == null) {
+            System.out.println("No user profile found with UUID: " + userUUID);
+            return false;
+        }
+        System.out.println(userProfileDTO.getSurname());
+        System.out.println(userProfileDTO.getFirstname());
+        System.out.println(userProfileDTO.getBirthday());
+        System.out.println(userProfileDTO.getAddress());
+        return userProfileDTO.getFirstname() != null && !userProfileDTO.getFirstname().isEmpty() &&
+                userProfileDTO.getSurname() != null && !userProfileDTO.getSurname().isEmpty() &&
+                userProfileDTO.getBirthday() != null &&
+                userProfileDTO.getAddress() != null;
+    }
 
 
     public UserProfileDTO getUserProfileDTO(String userUUID) {
@@ -98,8 +114,11 @@ public class UserProfileService {
             return null;
         }
 
-        byte[] decompressedImage = ImageUtil.decompressImage(userProfile.getSmallAvatar());
-        System.out.println(userProfile.getAddress());
+        byte[] decompressedImage = null;
+
+        if (userProfile.getSmallAvatar() != null) {
+            decompressedImage = ImageUtil.decompressImage(userProfile.getSmallAvatar());
+        }
         return new UserProfileDTO(
                 userProfile.getFirstname(),
                 userProfile.getSurname(),

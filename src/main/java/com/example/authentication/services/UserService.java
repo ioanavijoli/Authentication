@@ -48,15 +48,19 @@ public class UserService {
     }
 
     public Map<String, String> getUserDetailsByUsername(String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalStateException("User not found"));
-
-        UserProfile userProfile = userProfileRepository.findByUUID(user.getUUID())
-                .orElseThrow(() -> new IllegalStateException("User profile not found"));
-
+        Optional<User> user = userRepository.findByUsername(username);
         Map<String, String> userDetails = new HashMap<>();
-        userDetails.put("firstName", userProfile.getFirstname());
-        userDetails.put("lastName", userProfile.getSurname());
+        if(user.isPresent()) {
+            UserProfile userProfile = userProfileRepository.findByUUID(user.get().getUUID())
+                    .orElseThrow(() -> new IllegalStateException("User profile not found"));
+
+            userDetails.put("firstName", userProfile.getFirstname());
+            userDetails.put("lastName", userProfile.getSurname());
+        }
+        else {
+            userDetails.put("firstName", null);
+            userDetails.put("lastName", null);
+        }
 
         return userDetails;
     }
@@ -96,5 +100,6 @@ public class UserService {
                 .filter(review -> review.getUsername().equals(username))
                 .collect(Collectors.toList());
     }
+
 
 }

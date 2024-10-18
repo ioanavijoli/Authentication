@@ -50,21 +50,40 @@ public class AuthenticationController {
                 return ResponseEntity.ok(response);
             }
 
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of(
+                            "errorCode", HttpStatus.NOT_FOUND.value(),
+                            "errorKey", "USER_NOT_FOUND",
+                            "errorMsg", "User not found."
+                    ));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of(
+                            "errorCode", HttpStatus.UNAUTHORIZED.value(),
+                            "errorKey", "UNAUTHORIZED_ACCESS",
+                            "errorMsg", "Invalid credentials."
+                    ));
         }
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<User> signUp(@RequestBody UserDTO request) {
+    public ResponseEntity<?> signUp(@RequestBody UserDTO request) {
         if (userService.findByUsername(request.getUsername()).isPresent()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Map.of(
+                            "errorCode", HttpStatus.CONFLICT.value(),
+                            "errorKey", "USERNAME_TAKEN",
+                            "errorMsg", "Username is already taken."
+                    ));
         }
 
         if (request.getUsername().isEmpty() || request.getEmail().isEmpty() || request.getPassword().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of(
+                            "errorCode", HttpStatus.BAD_REQUEST.value(),
+                            "errorKey", "BAD_REQUEST",
+                            "errorMsg", "Username, email, and password cannot be empty."
+                    ));
         }
         UserRole role = (request.getRole() != null) ? request.getRole() : UserRole.USER;
 
